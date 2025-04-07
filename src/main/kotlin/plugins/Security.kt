@@ -1,29 +1,20 @@
 package com.alievisa.plugins
 
-import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
-import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
+import com.alievisa.domain.interactor.AuthInteractor
+import com.alievisa.domain.interactor.UserInteractor
+import io.ktor.server.application.Application
+import io.ktor.server.auth.authentication
+import io.ktor.server.auth.jwt.jwt
 
-fun Application.configureSecurity() {
-    // Please read the jwt property from the config file if you are using EngineMain
-    val jwtAudience = "jwt-audience"
-    val jwtDomain = "https://jwt-provider-domain/"
-    val jwtRealm = "ktor sample app"
-    val jwtSecret = "secret"
+fun Application.configureSecurity(authInteractor: AuthInteractor, userInteractor: UserInteractor) {
+
     authentication {
-        jwt {
-            realm = jwtRealm
-            verifier(
-                JWT
-                    .require(Algorithm.HMAC256(jwtSecret))
-                    .withAudience(jwtAudience)
-                    .withIssuer(jwtDomain)
-                    .build()
-            )
-            validate { credential ->
-                if (credential.payload.audience.contains(jwtAudience)) JWTPrincipal(credential.payload) else null
+        jwt("jwt") {
+            verifier(authInteractor.getJwtVerifier())
+            realm = "Service server"
+            validate {
+                val id = it.payload.getClaim("id").asInt()
+                userInteractor.getUserById(id = id)
             }
         }
     }

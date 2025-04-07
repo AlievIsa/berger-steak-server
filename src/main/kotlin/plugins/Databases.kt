@@ -1,13 +1,13 @@
 package com.alievisa.plugins
 
-import com.alievisa.data.DatabaseConfig
-import com.alievisa.data.model.tables.CategoryTable
-import com.alievisa.data.model.tables.DishTable
-import com.alievisa.data.model.tables.OrderTable
-import com.alievisa.data.model.tables.PositionTable
-import com.alievisa.data.model.tables.RestaurantTable
-import com.alievisa.data.model.tables.UserTable
-import io.ktor.server.application.*
+import com.alievisa.data.model.table.CategoryTable
+import com.alievisa.data.model.table.DishTable
+import com.alievisa.data.model.table.OrderTable
+import com.alievisa.data.model.table.PositionTable
+import com.alievisa.data.model.table.RestaurantTable
+import com.alievisa.data.model.table.UserTable
+import com.alievisa.utils.DatabaseConfig
+import io.ktor.server.application.Application
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction

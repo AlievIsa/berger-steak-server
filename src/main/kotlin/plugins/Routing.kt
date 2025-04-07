@@ -1,13 +1,13 @@
 package com.alievisa.plugins
 
-import io.ktor.server.application.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import com.alievisa.domain.interactor.AuthInteractor
+import com.alievisa.domain.interactor.UserInteractor
+import com.alievisa.routes.userRoute
+import io.ktor.server.application.Application
+import io.ktor.server.routing.routing
 
-fun Application.configureRouting() {
+fun Application.configureRouting(authInteractor: AuthInteractor, userInteractor: UserInteractor) {
     routing {
-        get("/") {
-            call.respondText("Hello World!")
-        }
+        userRoute(authInteractor, userInteractor)
     }
 }
