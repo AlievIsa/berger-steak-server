@@ -1,4 +1,4 @@
-package com.alievisa.data
+package com.alievisa.utils
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource

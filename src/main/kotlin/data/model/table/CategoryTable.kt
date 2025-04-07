@@ -1,10 +1,10 @@
-package com.alievisa.data.model.tables
+package com.alievisa.data.model.table
 
 import org.jetbrains.exposed.sql.Table
 
-object RestaurantTable : Table("restaurants") {
+object CategoryTable : Table("categories") {
     val id = integer("id").autoIncrement()
-    val address = varchar("address", 255)
+    val name = varchar("name", 100)
 
     override val primaryKey = PrimaryKey(id)
 }
