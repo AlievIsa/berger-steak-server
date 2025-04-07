@@ -1,12 +1,13 @@
 package com.alievisa.plugins
 
-import com.alievisa.data.model.table.CategoryTable
-import com.alievisa.data.model.table.DishTable
-import com.alievisa.data.model.table.OrderTable
-import com.alievisa.data.model.table.PositionTable
-import com.alievisa.data.model.table.RestaurantTable
-import com.alievisa.data.model.table.UserTable
-import com.alievisa.utils.DatabaseConfig
+import com.alievisa.model.table.CategoryTable
+import com.alievisa.model.table.DishTable
+import com.alievisa.model.table.OrderTable
+import com.alievisa.model.table.PositionTable
+import com.alievisa.model.table.RestaurantTable
+import com.alievisa.model.table.UserTable
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
 import io.ktor.server.application.Application
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -24,5 +25,21 @@ fun Application.configureDatabase() {
         SchemaUtils.create(
             UserTable, OrderTable, DishTable, PositionTable, CategoryTable, RestaurantTable
         )
+    }
+}
+
+class DatabaseConfig(private val dbUrl: String, private val dbUser: String, private val dbPassword: String) {
+    fun createHikariDatasource(): HikariDataSource {
+        val config = HikariConfig().apply {
+            driverClassName = "org.postgresql.Driver"
+            jdbcUrl = dbUrl
+            username = dbUser
+            password = dbPassword
+            maximumPoolSize = System.getenv("DB_MAX_POOL_SIZE")?.toInt() ?: 3
+            isAutoCommit = false
+            transactionIsolation = "TRANSACTION_REPEATABLE_READ"
+            validate()
+        }
+        return HikariDataSource(config)
     }
 }

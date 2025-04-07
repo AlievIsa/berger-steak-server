@@ -1,6 +1,6 @@
-package com.alievisa.authentication
+package com.alievisa.service
 
-import com.alievisa.domain.model.UserModel
+import com.alievisa.model.UserModel
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm

@@ -1,10 +1,13 @@
-package com.alievisa.data.model.dto.request
+package com.alievisa.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SendOtpRequest(
+data class UserModel(
+    val id: Int = 0,
+    val name: String,
     @SerialName("phone_number")
     val phoneNumber: String,
+    val address: String,
 )

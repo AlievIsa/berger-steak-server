@@ -1,4 +1,4 @@
-package com.alievisa.data.model.dto.response
+package com.alievisa.routes.response
 
 import kotlinx.serialization.Serializable
 

@@ -1,6 +1,6 @@
-package com.alievisa.data.repository.api
+package com.alievisa.repository.api
 
-import com.alievisa.domain.model.UserModel
+import com.alievisa.model.UserModel
 
 interface UserRepository {
 

@@ -1,4 +1,4 @@
-package com.alievisa.data.service
+package com.alievisa.service
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -10,12 +10,12 @@ import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.Serializable
 
-interface SmsSender {
+interface SmsService {
 
     suspend fun sendSms(destination: String, code: String)
 }
 
-class ExolveSmsSender : SmsSender {
+class ExolveSmsService : SmsService {
 
     private val client = HttpClient(CIO) {
         install(ContentNegotiation) {

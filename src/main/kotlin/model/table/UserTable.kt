@@ -1,4 +1,4 @@
-package com.alievisa.data.model.table
+package com.alievisa.model.table
 
 import org.jetbrains.exposed.sql.Table
 

@@ -1,4 +1,4 @@
-package com.alievisa.data.service
+package com.alievisa.service
 
 import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.CoroutineScope

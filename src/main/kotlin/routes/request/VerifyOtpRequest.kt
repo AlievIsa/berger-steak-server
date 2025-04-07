@@ -1,13 +1,11 @@
-package com.alievisa.domain.model
+package com.alievisa.routes.request
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserModel(
-    val id: Int = 0,
-    val name: String,
+data class VerifyOtpRequest(
     @SerialName("phone_number")
     val phoneNumber: String,
-    val address: String,
+    val code: String,
 )

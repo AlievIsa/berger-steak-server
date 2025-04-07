@@ -1,8 +1,8 @@
-package com.alievisa.data.repository.impl
+package com.alievisa.repository.impl
 
-import com.alievisa.data.model.table.UserTable
-import com.alievisa.data.repository.api.UserRepository
-import com.alievisa.domain.model.UserModel
+import com.alievisa.model.UserModel
+import com.alievisa.model.table.UserTable
+import com.alievisa.repository.api.UserRepository
 import com.alievisa.utils.dbQuery
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
