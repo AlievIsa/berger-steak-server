@@ -136,7 +136,7 @@ fun Route.userRoute(authRepository: AuthRepository, userRepository: UserReposito
                 call.respond(HttpStatusCode.Unauthorized, Constants.ERROR.UNAUTHORIZED)
                 return@get
             }
-            call.respond(user)
+            call.respond(HttpStatusCode.OK, user)
         }
 
         post("api/v1/update-user-info") {
