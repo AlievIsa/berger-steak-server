@@ -10,5 +10,7 @@ interface UserRepository {
 
     suspend fun addUser(userModel: UserModel)
 
+    suspend fun deleteUserById(id: Int)
+
     suspend fun updateUserInfo(id: Int, name: String, address: String)
 }

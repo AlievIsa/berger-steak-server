@@ -4,6 +4,7 @@ import com.alievisa.model.table.CategoryTable
 import com.alievisa.model.table.DishTable
 import com.alievisa.model.table.OrderTable
 import com.alievisa.model.table.PositionTable
+import com.alievisa.model.table.RefreshTokenTable
 import com.alievisa.model.table.RestaurantTable
 import com.alievisa.model.table.UserTable
 import com.zaxxer.hikari.HikariConfig
@@ -23,7 +24,7 @@ fun Application.configureDatabase() {
 
     transaction {
         SchemaUtils.create(
-            UserTable, OrderTable, DishTable, PositionTable, CategoryTable, RestaurantTable
+            UserTable, OrderTable, DishTable, PositionTable, CategoryTable, RestaurantTable, RefreshTokenTable
         )
     }
 }

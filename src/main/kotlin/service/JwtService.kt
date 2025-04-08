@@ -1,28 +1,45 @@
 package com.alievisa.service
 
-import com.alievisa.model.UserModel
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
-import java.time.LocalDateTime
-import java.time.ZoneOffset
+import java.util.*
 
-class JwtService {
+class JwtService(
+    private val accessTokenMinutesToLive: Int = 15,
+    private val refreshTokenDaysToLive: Int = 30,
+) {
 
     private val issuer = System.getenv("JWT_ISSUER") ?: throw IllegalStateException("JWT_ISSUER is not set")
-    private val jwtSecret = System.getenv("JWT_SECRET") ?: throw IllegalStateException("JWT_SECRET is not set")
-    private val algorithm = Algorithm.HMAC256(jwtSecret)
+    private val accessSecret =
+        System.getenv("JWT_ACCESS_TOKEN_SECRET") ?: throw IllegalStateException("JWT_ACCESS_TOKEN_SECRET is not set")
+    private val refreshSecret =
+        System.getenv("JWT_REFRESH_TOKEN_SECRET") ?: throw IllegalStateException("JWT_REFRESH_TOKEN_SECRET is not set")
 
-    private val verifier: JWTVerifier = JWT
-        .require(algorithm).withIssuer(issuer)
-        .build()
+    private val accessAlgorithm = Algorithm.HMAC256(accessSecret)
+    private val refreshAlgorithm = Algorithm.HMAC256(refreshSecret)
 
-    fun generateToken(user: UserModel): String {
+    fun generateAccessToken(userId: Int): String {
+        val expirationTimeMillis = System.currentTimeMillis() + accessTokenMinutesToLive * 60 * 1000
         return JWT.create()
-            .withSubject("AppAuthentication").withIssuer(issuer)
-            .withClaim("id", user.id).withExpiresAt(LocalDateTime.now().plusDays(1).toInstant(ZoneOffset.UTC))
-            .sign(algorithm)
+            .withSubject(userId.toString())
+            .withIssuer(issuer)
+            .withExpiresAt(Date(expirationTimeMillis))
+            .sign(accessAlgorithm)
     }
 
-    fun getVerifier(): JWTVerifier = verifier
+    fun generateRefreshToken(userId: Int): String {
+        val expirationTimeMillis = System.currentTimeMillis() + refreshTokenDaysToLive * 24 * 60 * 60 * 1000
+        return JWT.create()
+            .withSubject(userId.toString())
+            .withIssuer(issuer)
+            .withExpiresAt(Date(expirationTimeMillis))
+            .sign(refreshAlgorithm)
+    }
+
+    fun getAccessVerifier(): JWTVerifier =
+        JWT.require(accessAlgorithm).withIssuer(issuer).build()
+
+    fun getRefreshVerifier(): JWTVerifier =
+        JWT.require(refreshAlgorithm).withIssuer(issuer).build()
 }

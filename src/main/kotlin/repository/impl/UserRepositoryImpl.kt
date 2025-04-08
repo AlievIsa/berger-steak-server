@@ -5,6 +5,8 @@ import com.alievisa.model.table.UserTable
 import com.alievisa.repository.api.UserRepository
 import com.alievisa.utils.dbQuery
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.update
@@ -34,6 +36,12 @@ class UserRepositoryImpl : UserRepository {
                 userTable[phoneNumber] = userModel.phoneNumber
                 userTable[address] = userModel.address
             }
+        }
+    }
+
+    override suspend fun deleteUserById(id: Int) {
+        dbQuery {
+            UserTable.deleteWhere { UserTable.id.eq(id) }
         }
     }
 

@@ -3,10 +3,13 @@ package com.alievisa.routes
 import com.alievisa.model.UserModel
 import com.alievisa.repository.api.AuthRepository
 import com.alievisa.repository.api.UserRepository
-import com.alievisa.routes.request.SendOtpRequest
+import com.alievisa.routes.request.LoginRequest
+import com.alievisa.routes.request.LogoutRequest
+import com.alievisa.routes.request.RefreshTokenRequest
 import com.alievisa.routes.request.UpdateUserRequest
 import com.alievisa.routes.request.VerifyOtpRequest
-import com.alievisa.routes.response.TokenResponse
+import com.alievisa.routes.response.AccessTokenResponse
+import com.alievisa.routes.response.AuthTokensResponse
 import com.alievisa.utils.Constants
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
@@ -19,8 +22,8 @@ import io.ktor.server.routing.post
 
 fun Route.userRoute(authRepository: AuthRepository, userRepository: UserRepository) {
 
-    post("api/v1/send-otp") {
-        val request = call.receiveNullable<SendOtpRequest>() ?: run {
+    post("api/v1/login") {
+        val request = call.receiveNullable<LoginRequest>() ?: run {
             call.respond(HttpStatusCode.BadRequest, Constants.ERROR.BAD_REQUEST)
             return@post
         }
@@ -29,6 +32,7 @@ fun Route.userRoute(authRepository: AuthRepository, userRepository: UserReposito
             authRepository.sendOtp(request.phoneNumber)
             call.respond(HttpStatusCode.OK, Constants.SUCCESS.OTP_SEND_SUCCESSFULLY)
         } catch (e: Exception) {
+            e.printStackTrace()
             call.respond(HttpStatusCode.InternalServerError, "${Constants.ERROR.FAILED_TO_SEND_OTP}: ${e.message}")
         }
     }
@@ -57,11 +61,72 @@ fun Route.userRoute(authRepository: AuthRepository, userRepository: UserReposito
                 userRepository.addUser(newUser)
                 user = userRepository.getUserByPhoneNumber(request.phoneNumber)!!
             }
-            val token = authRepository.generateToken(user)
-            call.respond(HttpStatusCode.OK, TokenResponse(token))
+            val accessToken = authRepository.generateAccessToken(user.id)
+            val refreshToken = authRepository.generateRefreshToken(user.id)
+            authRepository.saveRefreshToken(user.id, refreshToken)
 
+            val savedToken = authRepository.getRefreshTokenByUserId(user.id)
+            if (savedToken != refreshToken) {
+                call.respond(HttpStatusCode.Unauthorized, Constants.ERROR.INVALID_REFRESH_TOKEN)
+                return@post
+            }
+
+            call.respond(HttpStatusCode.OK, AuthTokensResponse(accessToken, refreshToken))
         } catch (e: Exception) {
+            e.printStackTrace()
             call.respond(HttpStatusCode.InternalServerError, "${Constants.ERROR.OTP_VERIFICATION_FAILED}: ${e.message}")
+        }
+    }
+
+    post("api/v1/refresh-token") {
+        val request = call.receiveNullable<RefreshTokenRequest>() ?: run {
+            call.respond(HttpStatusCode.BadRequest, Constants.ERROR.BAD_REQUEST)
+            return@post
+        }
+
+        try {
+            val decodedJWT = authRepository.getRefreshVerifier().verify(request.refreshToken)
+            val userId = decodedJWT.subject.toIntOrNull()
+
+            if (userId == null) {
+                call.respond(HttpStatusCode.Unauthorized, Constants.ERROR.INVALID_TOKEN_PAYLOAD)
+                return@post
+            }
+
+            val savedToken = authRepository.getRefreshTokenByUserId(userId)
+            if (savedToken != request.refreshToken) {
+                call.respond(HttpStatusCode.Unauthorized, Constants.ERROR.INVALID_REFRESH_TOKEN)
+                return@post
+            }
+
+            val accessToken = authRepository.generateAccessToken(userId)
+            call.respond(HttpStatusCode.OK, AccessTokenResponse(accessToken))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            call.respond(HttpStatusCode.Unauthorized, "${Constants.ERROR.TOKEN_VERIFICATION_FAILED}: ${e.message}")
+        }
+    }
+
+    post("api/v1/logout") {
+        val request = call.receiveNullable<LogoutRequest>() ?: run {
+            call.respond(HttpStatusCode.BadRequest, Constants.ERROR.BAD_REQUEST)
+            return@post
+        }
+
+        try {
+            val decodedJWT = authRepository.getRefreshVerifier().verify(request.refreshToken)
+            val userId = decodedJWT.subject.toIntOrNull()
+
+            if (userId == null) {
+                call.respond(HttpStatusCode.Unauthorized, Constants.ERROR.INVALID_TOKEN_PAYLOAD)
+                return@post
+            }
+
+            authRepository.deleteRefreshTokenByUserId(userId)
+            call.respond(HttpStatusCode.OK, Constants.SUCCESS.LOGOUT_SUCCESSFUL)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            call.respond(HttpStatusCode.Unauthorized, "${Constants.ERROR.TOKEN_VERIFICATION_FAILED}: ${e.message}")
         }
     }
 

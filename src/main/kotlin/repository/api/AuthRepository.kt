@@ -1,6 +1,5 @@
 package com.alievisa.repository.api
 
-import com.alievisa.model.UserModel
 import com.auth0.jwt.JWTVerifier
 
 interface AuthRepository {
@@ -9,7 +8,17 @@ interface AuthRepository {
 
     suspend fun verifyOtp(phoneNumber: String, code: String): Boolean
 
-    fun generateToken(userModel: UserModel): String
+    fun generateAccessToken(userId: Int): String
 
-    fun getJwtVerifier(): JWTVerifier
+    fun generateRefreshToken(userId: Int): String
+
+    fun getAccessVerifier(): JWTVerifier
+
+    fun getRefreshVerifier(): JWTVerifier
+
+    suspend fun saveRefreshToken(userId: Int, token: String)
+
+    suspend fun getRefreshTokenByUserId(userId: Int): String?
+
+    suspend fun deleteRefreshTokenByUserId(userId: Int)
 }

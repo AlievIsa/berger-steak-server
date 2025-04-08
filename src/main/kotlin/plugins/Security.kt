@@ -10,11 +10,13 @@ fun Application.configureSecurity(authRepository: AuthRepository, userRepository
 
     authentication {
         jwt("jwt") {
-            verifier(authRepository.getJwtVerifier())
-            realm = "Service server"
+            verifier(authRepository.getAccessVerifier())
+            realm = "Berger Steak"
             validate {
-                val id = it.payload.getClaim("id").asInt()
-                userRepository.getUserById(id = id)
+                val userId = it.payload.subject.toIntOrNull()
+                userId?.let { id ->
+                    userRepository.getUserById(id = id)
+                }
             }
         }
     }
