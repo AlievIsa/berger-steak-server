@@ -7,6 +7,7 @@ import com.alievisa.plugins.configureSecurity
 import com.alievisa.plugins.configureSerialization
 import com.alievisa.repository.impl.AuthRepositoryImpl
 import com.alievisa.repository.impl.MenuRepositoryImpl
+import com.alievisa.repository.impl.RestaurantRepositoryImpl
 import com.alievisa.repository.impl.UserRepositoryImpl
 import com.alievisa.service.ExolveSmsService
 import com.alievisa.service.JwtService
@@ -28,10 +29,16 @@ fun Application.module() {
     )
     val userRepository = UserRepositoryImpl()
     val menuRepository = MenuRepositoryImpl()
+    val restaurantRepository = RestaurantRepositoryImpl()
 
     configureDatabase()
     configureSerialization()
     configureMonitoring()
     configureSecurity(authRepository, userRepository)
-    configureRouting(authRepository, userRepository, menuRepository)
+    configureRouting(
+        authRepository = authRepository,
+        userRepository = userRepository,
+        menuRepository = menuRepository,
+        restaurantRepository = restaurantRepository
+    )
 }

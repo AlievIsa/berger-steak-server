@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class RestaurantModel(
     val id: Int = 0,
     val address: String,
-    val location: String? = null
+    val location: String,
 )
