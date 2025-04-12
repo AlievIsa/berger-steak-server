@@ -6,11 +6,11 @@ interface UserRepository {
 
     suspend fun getUserById(id: Int): UserModel?
 
-    suspend fun getUserByPhoneNumber(phoneNumber: String): UserModel?
+    suspend fun getUserByMail(mail: String): UserModel?
 
     suspend fun addUser(userModel: UserModel)
 
     suspend fun deleteUserById(id: Int)
 
-    suspend fun updateUserInfo(id: Int, name: String, address: String)
+    suspend fun updateUserInfo(id: Int, name: String, phoneNumber: String, address: String)
 }

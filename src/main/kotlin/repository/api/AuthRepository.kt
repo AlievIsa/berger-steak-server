@@ -4,9 +4,9 @@ import com.auth0.jwt.JWTVerifier
 
 interface AuthRepository {
 
-    suspend fun sendOtp(phoneNumber: String)
+    suspend fun sendOtp(mail: String)
 
-    suspend fun verifyOtp(phoneNumber: String, code: String): Boolean
+    suspend fun verifyOtp(mail: String, code: String): Boolean
 
     fun generateAccessToken(userId: Int): String
 

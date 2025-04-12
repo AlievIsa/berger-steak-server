@@ -13,21 +13,21 @@ class OtpService(
     private val otpMap = ConcurrentHashMap<String, String>()
     private val scope = CoroutineScope(Dispatchers.Default)
 
-    fun saveOtp(phoneNumber: String, code: String) {
-        otpMap[phoneNumber] = code
-        println("Generated OTP code $code for $phoneNumber was saved")
+    fun saveOtp(mailAddress: String, code: String) {
+        otpMap[mailAddress] = code
+        println("Generated OTP code $code for $mailAddress was saved")
 
         scope.launch {
             delay(ttlSeconds * 1000)
-            otpMap.remove(phoneNumber)
-            println("Generated OTP code $code for $phoneNumber was removed")
+            otpMap.remove(mailAddress)
+            println("Generated OTP code $code for $mailAddress was removed")
         }
     }
 
-    fun verifyOtp(phoneNumber: String, code: String): Boolean {
-        val isValid = otpMap[phoneNumber] == code
+    fun verifyOtp(mailAddress: String, code: String): Boolean {
+        val isValid = otpMap[mailAddress] == code
         if (isValid) {
-            otpMap.remove(phoneNumber)
+            otpMap.remove(mailAddress)
         }
         return isValid
     }

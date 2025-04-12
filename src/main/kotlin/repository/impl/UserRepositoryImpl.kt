@@ -21,9 +21,9 @@ class UserRepositoryImpl : UserRepository {
         }
     }
 
-    override suspend fun getUserByPhoneNumber(phoneNumber: String): UserModel? {
+    override suspend fun getUserByMail(mail: String): UserModel? {
         return dbQuery {
-            UserTable.selectAll().where { UserTable.phoneNumber.eq(phoneNumber) }
+            UserTable.selectAll().where { UserTable.mail.eq(mail) }
                 .map { rowToUser(row = it) }
                 .singleOrNull()
         }
@@ -33,6 +33,7 @@ class UserRepositoryImpl : UserRepository {
         dbQuery {
             UserTable.insert { userTable ->
                 userTable[name] = userModel.name
+                userTable[mail] = userModel.mail
                 userTable[phoneNumber] = userModel.phoneNumber
                 userTable[address] = userModel.address
             }
@@ -45,10 +46,11 @@ class UserRepositoryImpl : UserRepository {
         }
     }
 
-    override suspend fun updateUserInfo(id: Int, name: String, address: String) {
+    override suspend fun updateUserInfo(id: Int, name: String, phoneNumber: String, address: String) {
         dbQuery {
             UserTable.update(where = { UserTable.id.eq(id) }) { userTable ->
                 userTable[this.name] = name
+                userTable[this.phoneNumber] = phoneNumber
                 userTable[this.address] = address
             }
         }
@@ -59,6 +61,7 @@ class UserRepositoryImpl : UserRepository {
             UserModel(
                 id = it[UserTable.id],
                 name = it[UserTable.name],
+                mail = it[UserTable.mail],
                 phoneNumber = it[UserTable.phoneNumber],
                 address = it[UserTable.address],
             )

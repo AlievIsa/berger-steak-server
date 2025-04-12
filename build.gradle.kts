@@ -31,6 +31,7 @@ dependencies {
     implementation(libs.exposed.datetime)
     implementation(libs.hikari)
     implementation(libs.postgresql)
+    implementation(libs.mail)
     implementation(libs.h2)
     implementation(libs.ktor.server.call.logging)
     implementation(libs.ktor.server.auth)

@@ -9,9 +9,9 @@ import com.alievisa.repository.impl.AuthRepositoryImpl
 import com.alievisa.repository.impl.MenuRepositoryImpl
 import com.alievisa.repository.impl.RestaurantRepositoryImpl
 import com.alievisa.repository.impl.UserRepositoryImpl
-import com.alievisa.service.ExolveSmsService
 import com.alievisa.service.JwtService
 import com.alievisa.service.OtpService
+import com.alievisa.service.SMTPService
 import io.ktor.server.application.Application
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
@@ -25,7 +25,7 @@ fun Application.module() {
     val authRepository = AuthRepositoryImpl(
         jwtService = JwtService(),
         otpService = OtpService(),
-        smsService = ExolveSmsService()
+        mailService = SMTPService()
     )
     val userRepository = UserRepositoryImpl()
     val menuRepository = MenuRepositoryImpl()

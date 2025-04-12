@@ -29,7 +29,7 @@ fun Route.userRoute(authRepository: AuthRepository, userRepository: UserReposito
         }
 
         try {
-            authRepository.sendOtp(request.phoneNumber)
+            authRepository.sendOtp(request.mail)
             call.respond(HttpStatusCode.OK, Constants.SUCCESS.OTP_SEND_SUCCESSFULLY)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -44,22 +44,23 @@ fun Route.userRoute(authRepository: AuthRepository, userRepository: UserReposito
         }
 
         try {
-            val isValid = authRepository.verifyOtp(request.phoneNumber, request.code)
+            val isValid = authRepository.verifyOtp(request.mail, request.code)
             if (!isValid) {
                 call.respond(HttpStatusCode.Unauthorized, Constants.ERROR.INVALID_OTP_CODE)
                 return@post
             }
 
-            var user = userRepository.getUserByPhoneNumber(request.phoneNumber)
+            var user = userRepository.getUserByMail(request.mail)
             if (user == null) {
                 val newUser = UserModel(
                     id = 0,
                     name = "",
-                    phoneNumber = request.phoneNumber,
+                    mail = request.mail,
+                    phoneNumber = "",
                     address = "",
                 )
                 userRepository.addUser(newUser)
-                user = userRepository.getUserByPhoneNumber(request.phoneNumber)!!
+                user = userRepository.getUserByMail(request.mail)!!
             }
             val accessToken = authRepository.generateAccessToken(user.id)
             val refreshToken = authRepository.generateRefreshToken(user.id)
@@ -148,7 +149,7 @@ fun Route.userRoute(authRepository: AuthRepository, userRepository: UserReposito
                 call.respond(HttpStatusCode.BadRequest, Constants.ERROR.BAD_REQUEST)
                 return@post
             }
-            userRepository.updateUserInfo(user.id, request.name, request.address)
+            userRepository.updateUserInfo(user.id, request.name, request.phoneNumber, request.address)
             call.respond(HttpStatusCode.OK, Constants.SUCCESS.USER_INFO_UPDATED)
         }
     }

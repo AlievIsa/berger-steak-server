@@ -6,8 +6,8 @@ import com.auth0.jwt.algorithms.Algorithm
 import java.util.*
 
 class JwtService(
-    private val accessTokenMinutesToLive: Int = 15,
-    private val refreshTokenDaysToLive: Int = 30,
+    private val accessTokenMinutesToLive: Long = 15,
+    private val refreshTokenDaysToLive: Long = 30,
 ) {
 
     private val issuer = System.getenv("JWT_ISSUER") ?: throw IllegalStateException("JWT_ISSUER is not set")

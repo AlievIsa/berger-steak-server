@@ -10,11 +10,13 @@ import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.Serializable
 
+// Not used because Exolve works bad
 interface SmsService {
 
     suspend fun sendSms(destination: String, code: String)
 }
 
+// Without AlphaName sms don't reach the recipient
 class ExolveSmsService : SmsService {
 
     private val client = HttpClient(CIO) {
@@ -22,7 +24,7 @@ class ExolveSmsService : SmsService {
             json()
         }
     }
-    private val senderNumber = System.getenv("SMS_SENDER_NUMBER") ?: throw IllegalStateException("SMS_SENDER_NUMBER is not set")
+    private val senderNumber = System.getenv("SMS_SENDER_INFO") ?: throw IllegalStateException("SMS_SENDER_INFO is not set")
     private val apiKey = System.getenv("EXOLVE_API_KEY") ?: throw IllegalStateException("EXOLVE_API_KEY is not set")
 
     override suspend fun sendSms(destination: String, code: String) {

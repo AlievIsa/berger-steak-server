@@ -3,8 +3,8 @@ package com.alievisa.repository.impl
 import com.alievisa.model.table.RefreshTokenTable
 import com.alievisa.repository.api.AuthRepository
 import com.alievisa.service.JwtService
+import com.alievisa.service.MailService
 import com.alievisa.service.OtpService
-import com.alievisa.service.SmsService
 import com.alievisa.utils.dbQuery
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
@@ -15,19 +15,19 @@ import org.jetbrains.exposed.sql.update
 class AuthRepositoryImpl(
     private val jwtService: JwtService,
     private val otpService: OtpService,
-    private val smsService: SmsService,
+    private val mailService: MailService,
 ) : AuthRepository {
 
-    override suspend fun sendOtp(phoneNumber: String) {
+    override suspend fun sendOtp(mail: String) {
         val code = generateCode()
-        println("Generated OTP code for $phoneNumber: $code")
+        println("Generated OTP code for $mail: $code")
 
-        otpService.saveOtp(phoneNumber, code)
-        smsService.sendSms(phoneNumber, code)
+        otpService.saveOtp(mail, code)
+        mailService.sendMessage(mail, code)
     }
 
-    override suspend fun verifyOtp(phoneNumber: String, code: String): Boolean {
-        return otpService.verifyOtp(phoneNumber, code)
+    override suspend fun verifyOtp(mail: String, code: String): Boolean {
+        return otpService.verifyOtp(mail, code)
     }
 
     override fun generateAccessToken(userId: Int) = jwtService.generateAccessToken(userId)
