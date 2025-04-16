@@ -1,5 +1,6 @@
 package com.alievisa.service
 
+import com.alievisa.utils.CustomLogger
 import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,12 +16,12 @@ class OtpService(
 
     fun saveOtp(mailAddress: String, code: String) {
         otpMap[mailAddress] = code
-        println("Generated OTP code $code for $mailAddress was saved")
+        CustomLogger.log("OtpService: generated OTP code $code for $mailAddress was saved")
 
         scope.launch {
             delay(ttlSeconds * 1000)
             otpMap.remove(mailAddress)
-            println("Generated OTP code $code for $mailAddress was removed")
+            CustomLogger.log("OtpService: OTP code $code for $mailAddress was removed")
         }
     }
 

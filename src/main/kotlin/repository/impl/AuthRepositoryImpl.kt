@@ -2,6 +2,7 @@ package com.alievisa.repository.impl
 
 import com.alievisa.model.table.RefreshTokenTable
 import com.alievisa.repository.api.AuthRepository
+import com.alievisa.service.DeviceService
 import com.alievisa.service.JwtService
 import com.alievisa.service.MailService
 import com.alievisa.service.OtpService
@@ -16,11 +17,11 @@ class AuthRepositoryImpl(
     private val jwtService: JwtService,
     private val otpService: OtpService,
     private val mailService: MailService,
+    private val deviceService: DeviceService,
 ) : AuthRepository {
 
     override suspend fun sendOtp(mail: String) {
         val code = generateCode()
-        println("Generated OTP code for $mail: $code")
 
         otpService.saveOtp(mail, code)
         mailService.sendMessage(mail, code)
@@ -32,20 +33,29 @@ class AuthRepositoryImpl(
 
     override fun generateAccessToken(userId: Int) = jwtService.generateAccessToken(userId)
 
-    override fun generateRefreshToken(userId: Int) = jwtService.generateRefreshToken(userId)
+    override fun generateRefreshToken(deviceId: String) = jwtService.generateRefreshToken(deviceId)
 
     override fun getAccessVerifier() = jwtService.getAccessVerifier()
 
     override fun getRefreshVerifier() = jwtService.getRefreshVerifier()
 
-    override suspend fun saveRefreshToken(userId: Int, token: String) {
+    override suspend fun getUserIdByDeviceId(deviceId: String): Int? {
+        return dbQuery {
+            RefreshTokenTable.selectAll().where { RefreshTokenTable.deviceId.eq(deviceId) }
+                .map { it[RefreshTokenTable.userId] }
+                .singleOrNull()
+        }
+    }
+
+    override suspend fun saveRefreshToken(deviceId: String, userId: Int, token: String) {
         dbQuery {
-            if (RefreshTokenTable.selectAll().where { RefreshTokenTable.userId.eq(userId) }.empty().not() ) {
-                RefreshTokenTable.update(where = { RefreshTokenTable.userId.eq(userId) } ) {
+            if (RefreshTokenTable.selectAll().where { RefreshTokenTable.deviceId.eq(deviceId) }.empty().not() ) {
+                RefreshTokenTable.update(where = { RefreshTokenTable.deviceId.eq(deviceId) } ) {
                     it[this.token] = token
                 }
             } else {
                 RefreshTokenTable.insert {
+                    it[this.deviceId] = deviceId
                     it[this.userId] = userId
                     it[this.token] = token
                 }
@@ -53,17 +63,28 @@ class AuthRepositoryImpl(
         }
     }
 
-    override suspend fun getRefreshTokenByUserId(userId: Int): String? {
+    override suspend fun checkIsDeviceIdSuspiciouslyUsed(deviceId: String): Boolean {
+        if (deviceService.isDeviceIdSuspiciouslyUsed(deviceId)) {
+            dbQuery {
+                RefreshTokenTable.deleteWhere { RefreshTokenTable.deviceId.eq(deviceId) }
+            }
+            return true
+        }
+        return false
+    }
+
+    override suspend fun getRefreshTokenByDeviceId(deviceId: String): String? {
         return dbQuery {
-            RefreshTokenTable.selectAll().where { RefreshTokenTable.userId.eq(userId) }
+            RefreshTokenTable.selectAll().where { RefreshTokenTable.deviceId.eq(deviceId) }
                 .map { it[RefreshTokenTable.token] }
                 .singleOrNull()
         }
     }
 
-    override suspend fun deleteRefreshTokenByUserId(userId: Int) {
+    override suspend fun deleteRefreshTokenByDeviceId(deviceId: String) {
+        deviceService.releaseDeviceId(deviceId)
         dbQuery {
-            RefreshTokenTable.deleteWhere { RefreshTokenTable.userId.eq(userId) }
+            RefreshTokenTable.deleteWhere { RefreshTokenTable.deviceId.eq(deviceId) }
         }
     }
 

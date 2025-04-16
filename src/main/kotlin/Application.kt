@@ -9,6 +9,7 @@ import com.alievisa.repository.impl.AuthRepositoryImpl
 import com.alievisa.repository.impl.MenuRepositoryImpl
 import com.alievisa.repository.impl.RestaurantRepositoryImpl
 import com.alievisa.repository.impl.UserRepositoryImpl
+import com.alievisa.service.DeviceService
 import com.alievisa.service.JwtService
 import com.alievisa.service.OtpService
 import com.alievisa.service.SMTPService
@@ -25,7 +26,8 @@ fun Application.module() {
     val authRepository = AuthRepositoryImpl(
         jwtService = JwtService(),
         otpService = OtpService(),
-        mailService = SMTPService()
+        mailService = SMTPService(),
+        deviceService = DeviceService(),
     )
     val userRepository = UserRepositoryImpl()
     val menuRepository = MenuRepositoryImpl()
@@ -39,6 +41,6 @@ fun Application.module() {
         authRepository = authRepository,
         userRepository = userRepository,
         menuRepository = menuRepository,
-        restaurantRepository = restaurantRepository
+        restaurantRepository = restaurantRepository,
     )
 }

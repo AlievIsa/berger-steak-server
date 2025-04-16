@@ -10,15 +10,19 @@ interface AuthRepository {
 
     fun generateAccessToken(userId: Int): String
 
-    fun generateRefreshToken(userId: Int): String
+    fun generateRefreshToken(deviceId: String): String
 
     fun getAccessVerifier(): JWTVerifier
 
     fun getRefreshVerifier(): JWTVerifier
 
-    suspend fun saveRefreshToken(userId: Int, token: String)
+    suspend fun getUserIdByDeviceId(deviceId: String): Int?
 
-    suspend fun getRefreshTokenByUserId(userId: Int): String?
+    suspend fun saveRefreshToken(deviceId: String, userId: Int, token: String)
 
-    suspend fun deleteRefreshTokenByUserId(userId: Int)
+    suspend fun checkIsDeviceIdSuspiciouslyUsed(deviceId: String): Boolean
+
+    suspend fun getRefreshTokenByDeviceId(deviceId: String): String?
+
+    suspend fun deleteRefreshTokenByDeviceId(deviceId: String)
 }

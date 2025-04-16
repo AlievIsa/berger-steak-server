@@ -1,5 +1,6 @@
 package com.alievisa.service
 
+import com.alievisa.utils.CustomLogger
 import java.util.*
 import javax.mail.Authenticator
 import javax.mail.Message
@@ -45,10 +46,10 @@ class SMTPService : MailService {
             }
 
             Transport.send(message)
-            println("SMTPService: Message sent successful $destinationMail")
+            CustomLogger.log("SMTPService: Message sent successful $destinationMail")
 
         } catch (e: Exception) {
-            println("SMTPService: Failed to send mail message - ${e.message}")
+            CustomLogger.log("SMTPService: Failed to send mail message - ${e.message}")
             e.printStackTrace()
         }
     }

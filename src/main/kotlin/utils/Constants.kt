@@ -18,5 +18,7 @@ class Constants {
         const val INVALID_TOKEN_PAYLOAD = "Invalid token payload"
         const val INVALID_REFRESH_TOKEN = "Invalid refresh token"
         const val TOKEN_VERIFICATION_FAILED = "Token verification failed"
+        const val INVALID_DEVICE_ID = "Invalid device id"
+        const val REFRESH_TOKEN_WAS_STOLEN = "Refresh token was stolen"
     }
 }

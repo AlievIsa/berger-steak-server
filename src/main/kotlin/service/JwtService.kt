@@ -28,10 +28,10 @@ class JwtService(
             .sign(accessAlgorithm)
     }
 
-    fun generateRefreshToken(userId: Int): String {
+    fun generateRefreshToken(deviceId: String): String {
         val expirationTimeMillis = System.currentTimeMillis() + refreshTokenDaysToLive * 24 * 60 * 60 * 1000
         return JWT.create()
-            .withSubject(userId.toString())
+            .withSubject(deviceId)
             .withIssuer(issuer)
             .withExpiresAt(Date(expirationTimeMillis))
             .sign(refreshAlgorithm)
@@ -42,4 +42,5 @@ class JwtService(
 
     fun getRefreshVerifier(): JWTVerifier =
         JWT.require(refreshAlgorithm).withIssuer(issuer).build()
+
 }

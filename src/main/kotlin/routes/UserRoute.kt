@@ -63,10 +63,11 @@ fun Route.userRoute(authRepository: AuthRepository, userRepository: UserReposito
                 user = userRepository.getUserByMail(request.mail)!!
             }
             val accessToken = authRepository.generateAccessToken(user.id)
-            val refreshToken = authRepository.generateRefreshToken(user.id)
-            authRepository.saveRefreshToken(user.id, refreshToken)
+            val refreshToken = authRepository.generateRefreshToken(request.deviceId)
 
-            val savedToken = authRepository.getRefreshTokenByUserId(user.id)
+            authRepository.saveRefreshToken(request.deviceId, user.id, refreshToken)
+
+            val savedToken = authRepository.getRefreshTokenByDeviceId(request.deviceId)
             if (savedToken != refreshToken) {
                 call.respond(HttpStatusCode.Unauthorized, Constants.ERROR.INVALID_REFRESH_TOKEN)
                 return@post
@@ -87,16 +88,29 @@ fun Route.userRoute(authRepository: AuthRepository, userRepository: UserReposito
 
         try {
             val decodedJWT = authRepository.getRefreshVerifier().verify(request.refreshToken)
-            val userId = decodedJWT.subject.toIntOrNull()
+            val deviceId = decodedJWT.subject
 
-            if (userId == null) {
+            if (deviceId == null) {
                 call.respond(HttpStatusCode.Unauthorized, Constants.ERROR.INVALID_TOKEN_PAYLOAD)
                 return@post
             }
 
-            val savedToken = authRepository.getRefreshTokenByUserId(userId)
+            val isDeviceIdSuspiciouslyUsed = authRepository.checkIsDeviceIdSuspiciouslyUsed(deviceId)
+            if (isDeviceIdSuspiciouslyUsed) {
+                call.respond(HttpStatusCode.Conflict, Constants.ERROR.REFRESH_TOKEN_WAS_STOLEN)
+                return@post
+            }
+
+            val savedToken = authRepository.getRefreshTokenByDeviceId(deviceId)
             if (savedToken != request.refreshToken) {
                 call.respond(HttpStatusCode.Unauthorized, Constants.ERROR.INVALID_REFRESH_TOKEN)
+                return@post
+            }
+
+            val userId = authRepository.getUserIdByDeviceId(deviceId)
+
+            if (userId == null) {
+                call.respond(HttpStatusCode.Unauthorized, Constants.ERROR.INVALID_DEVICE_ID)
                 return@post
             }
 
@@ -116,14 +130,14 @@ fun Route.userRoute(authRepository: AuthRepository, userRepository: UserReposito
 
         try {
             val decodedJWT = authRepository.getRefreshVerifier().verify(request.refreshToken)
-            val userId = decodedJWT.subject.toIntOrNull()
+            val deviceId = decodedJWT.subject
 
-            if (userId == null) {
+            if (deviceId == null) {
                 call.respond(HttpStatusCode.Unauthorized, Constants.ERROR.INVALID_TOKEN_PAYLOAD)
                 return@post
             }
 
-            authRepository.deleteRefreshTokenByUserId(userId)
+            authRepository.deleteRefreshTokenByDeviceId(deviceId)
             call.respond(HttpStatusCode.OK, Constants.SUCCESS.LOGOUT_SUCCESSFUL)
         } catch (e: Exception) {
             e.printStackTrace()
