@@ -57,7 +57,7 @@ fun Route.userRoute(authRepository: AuthRepository, userRepository: UserReposito
                     name = "",
                     mail = request.mail,
                     phoneNumber = "",
-                    address = "",
+                    orders = emptyList(),
                 )
                 userRepository.addUser(newUser)
                 user = userRepository.getUserByMail(request.mail)!!
@@ -163,7 +163,7 @@ fun Route.userRoute(authRepository: AuthRepository, userRepository: UserReposito
                 call.respond(HttpStatusCode.BadRequest, Constants.ERROR.BAD_REQUEST)
                 return@post
             }
-            userRepository.updateUserInfo(user.id, request.name, request.phoneNumber, request.address)
+            userRepository.updateUserInfo(user.id, request.name, request.phoneNumber, request.mail)
             call.respond(HttpStatusCode.OK, Constants.SUCCESS.USER_INFO_UPDATED)
         }
     }

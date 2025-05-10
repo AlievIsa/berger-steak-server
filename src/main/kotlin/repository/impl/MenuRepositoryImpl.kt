@@ -48,6 +48,8 @@ class MenuRepositoryImpl : MenuRepository {
                 price = it[DishTable.price],
                 description = it[DishTable.description],
                 image = it[DishTable.image],
+                weight = it[DishTable.weight],
+                calories = it[DishTable.calories]
             )
         }
     }

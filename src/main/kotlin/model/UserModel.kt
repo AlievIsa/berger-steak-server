@@ -10,5 +10,5 @@ data class UserModel(
     val mail: String,
     @SerialName("phone_number")
     val phoneNumber: String,
-    val address: String,
+    val orders: List<OrderModel>,
 )

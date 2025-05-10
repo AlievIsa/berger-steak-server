@@ -8,5 +8,5 @@ data class UpdateUserRequest(
     val name: String,
     @SerialName("phone_number")
     val phoneNumber: String,
-    val address: String,
+    val mail: String,
 )

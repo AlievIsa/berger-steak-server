@@ -12,5 +12,5 @@ interface UserRepository {
 
     suspend fun deleteUserById(id: Int)
 
-    suspend fun updateUserInfo(id: Int, name: String, phoneNumber: String, address: String)
+    suspend fun updateUserInfo(id: Int, name: String, phoneNumber: String, mail: String)
 }
