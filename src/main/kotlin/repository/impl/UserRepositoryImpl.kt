@@ -1,6 +1,7 @@
 package com.alievisa.repository.impl
 
 import com.alievisa.model.OrderModel
+import com.alievisa.model.OrderStatus.Companion.statusFromString
 import com.alievisa.model.PositionModel
 import com.alievisa.model.UserModel
 import com.alievisa.model.table.OrderTable
@@ -70,7 +71,7 @@ class UserRepositoryImpl : UserRepository {
                     restaurantId = orderRow[OrderTable.restaurantId],
                     price = orderRow[OrderTable.price],
                     timestamp = orderRow[OrderTable.timestamp],
-                    status = orderRow[OrderTable.status],
+                    status = statusFromString(orderRow[OrderTable.status])!!,
                     positions = positions,
                 )
             }

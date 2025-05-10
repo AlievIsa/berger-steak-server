@@ -44,6 +44,7 @@ class MenuRepositoryImpl : MenuRepository {
         return row?.let {
             DishModel(
                 id = it[DishTable.id],
+                categoryId = it[DishTable.categoryId],
                 name = it[DishTable.name],
                 price = it[DishTable.price],
                 description = it[DishTable.description],

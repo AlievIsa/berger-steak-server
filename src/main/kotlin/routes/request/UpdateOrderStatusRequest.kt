@@ -4,7 +4,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RefreshTokenRequest(
-    @SerialName("refresh_token")
-    val refreshToken: String,
+data class UpdateOrderStatusRequest(
+    @SerialName("order_id")
+    val orderId: Int,
+    val status: String,
 )

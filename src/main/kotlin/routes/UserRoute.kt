@@ -10,6 +10,7 @@ import com.alievisa.routes.request.UpdateUserRequest
 import com.alievisa.routes.request.VerifyOtpRequest
 import com.alievisa.routes.response.AccessTokenResponse
 import com.alievisa.routes.response.AuthTokensResponse
+import com.alievisa.routes.response.UserResponse
 import com.alievisa.utils.Constants
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
@@ -151,7 +152,7 @@ fun Route.userRoute(authRepository: AuthRepository, userRepository: UserReposito
                 call.respond(HttpStatusCode.Unauthorized, Constants.ERROR.UNAUTHORIZED)
                 return@get
             }
-            call.respond(HttpStatusCode.OK, user)
+            call.respond(HttpStatusCode.OK, UserResponse(user))
         }
 
         post("api/v1/update-user-info") {

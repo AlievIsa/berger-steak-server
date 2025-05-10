@@ -1,14 +1,28 @@
 package com.alievisa.model
 
 import kotlinx.datetime.Instant
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class OrderModel(
     val id: Int = 0,
+    @SerialName("restaurant_id")
     val restaurantId: Int,
     val price: Int,
     val timestamp: Instant,
-    val status: String,
+    val status: OrderStatus,
     val positions: List<PositionModel>,
 )
+
+enum class OrderStatus(val value: String) {
+    Created("Created"),
+    Processing("Processing"),
+    Canceled("Canceled"),
+    Done("Done");
+
+    companion object {
+        fun statusFromString(value: String): OrderStatus? =
+            entries.find { it.value.equals(value, ignoreCase = true) }
+    }
+}

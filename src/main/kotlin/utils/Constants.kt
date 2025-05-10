@@ -3,9 +3,11 @@ package com.alievisa.utils
 class Constants {
 
     object SUCCESS {
-        const val USER_INFO_UPDATED = "User info updated"
+        const val USER_INFO_UPDATED = "User info updated successfully"
         const val OTP_SEND_SUCCESSFULLY = "OTP sent successfully"
         const val LOGOUT_SUCCESSFUL = "Logout successful"
+        const val ORDER_CREATED = "Order created successfully"
+        const val ORDER_STATUS_UPDATED = "Order status updated successfully"
     }
 
     object ERROR {
@@ -20,5 +22,7 @@ class Constants {
         const val TOKEN_VERIFICATION_FAILED = "Token verification failed"
         const val INVALID_DEVICE_ID = "Invalid device id"
         const val REFRESH_TOKEN_WAS_STOLEN = "Refresh token was stolen"
+        const val INVALID_ORDER_STATUS = "Invalid order status"
+        const val INVALID_ORDER_ID = "Invalid order id"
     }
 }
