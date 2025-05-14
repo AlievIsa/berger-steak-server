@@ -16,10 +16,11 @@ data class OrderModel(
 )
 
 enum class OrderStatus(val value: String) {
-    Created("Created"),
-    Processing("Processing"),
-    Canceled("Canceled"),
-    Done("Done");
+    CREATED("Created"),
+    PROCESSING("Processing"),
+    CANCELED("Canceled"),
+    DONE("Done"),
+    RECEIVED("Received");
 
     companion object {
         fun statusFromString(value: String): OrderStatus? =

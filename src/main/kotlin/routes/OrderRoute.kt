@@ -33,7 +33,7 @@ fun Route.orderRoute(orderRepository: OrderRepository) {
                 restaurantId = request.restaurantId,
                 price = request.price,
                 timestamp = request.timestamp,
-                status = OrderStatus.Created,
+                status = OrderStatus.CREATED,
                 positions = request.positions,
             )
 
