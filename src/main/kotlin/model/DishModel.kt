@@ -10,8 +10,8 @@ data class DishModel(
     val categoryId: Int,
     val name: String,
     val price: Int,
-    val description: String,
-    val image: String,
-    val weight: Int,
-    val calories: Int,
+    val description: String?,
+    val image: String?,
+    val weight: Int?,
+    val calories: Int?,
 )

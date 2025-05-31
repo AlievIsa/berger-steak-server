@@ -14,7 +14,9 @@ class MenuRepositoryImpl : MenuRepository {
 
     override suspend fun getMenu(): MenuModel {
         return dbQuery {
-            val categories = CategoryTable.selectAll().map { it to mutableListOf<DishModel>() }
+            val categories = CategoryTable.selectAll()
+                .map { it to mutableListOf<DishModel>() }
+                .sortedBy { it.first[CategoryTable.id] }
             val categoryMap = categories.associateBy(
                 keySelector = { it.first[CategoryTable.id] },
                 valueTransform = { it.second }

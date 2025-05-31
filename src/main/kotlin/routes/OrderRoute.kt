@@ -18,7 +18,7 @@ import io.ktor.server.routing.post
 fun Route.orderRoute(orderRepository: OrderRepository) {
 
     authenticate("jwt") {
-        post("api/v1/create-order") {
+        post("v1/create-order") {
             val user = call.principal<UserModel>() ?: run {
                 call.respond(HttpStatusCode.Unauthorized, Constants.ERROR.UNAUTHORIZED)
                 return@post
@@ -42,7 +42,7 @@ fun Route.orderRoute(orderRepository: OrderRepository) {
         }
     }
 
-    post("api/v1/update-order-status") {
+    post("v1/update-order-status") {
         val request = call.receiveNullable<UpdateOrderStatusRequest>() ?: run {
             call.respond(HttpStatusCode.BadRequest, Constants.ERROR.BAD_REQUEST)
             return@post

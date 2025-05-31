@@ -9,7 +9,7 @@ import io.ktor.server.routing.get
 
 fun Route.menuRoute(menuRepository: MenuRepository) {
 
-    get("api/v1/get-menu") {
+    get("v1/get-menu") {
         val menu = menuRepository.getMenu()
         call.respond(HttpStatusCode.OK, MenuResponse(menu))
     }

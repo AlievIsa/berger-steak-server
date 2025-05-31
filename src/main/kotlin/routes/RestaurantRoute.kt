@@ -9,7 +9,7 @@ import io.ktor.server.routing.get
 
 fun Route.restaurantRoute(restaurantRepository: RestaurantRepository) {
 
-    get("api/v1/get-restaurants") {
+    get("v1/get-restaurants") {
         val restaurants = restaurantRepository.getRestaurants()
         call.respond(HttpStatusCode.OK, RestaurantsResponse(restaurants))
     }

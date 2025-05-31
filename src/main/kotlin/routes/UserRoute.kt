@@ -23,7 +23,7 @@ import io.ktor.server.routing.post
 
 fun Route.userRoute(authRepository: AuthRepository, userRepository: UserRepository) {
 
-    post("api/v1/login") {
+    post("v1/login") {
         val request = call.receiveNullable<LoginRequest>() ?: run {
             call.respond(HttpStatusCode.BadRequest, Constants.ERROR.BAD_REQUEST)
             return@post
@@ -38,7 +38,7 @@ fun Route.userRoute(authRepository: AuthRepository, userRepository: UserReposito
         }
     }
 
-    post("api/v1/verify-otp") {
+    post("v1/verify-otp") {
         val request = call.receiveNullable<VerifyOtpRequest>() ?: run {
             call.respond(HttpStatusCode.BadRequest, Constants.ERROR.BAD_REQUEST)
             return@post
@@ -81,7 +81,7 @@ fun Route.userRoute(authRepository: AuthRepository, userRepository: UserReposito
         }
     }
 
-    post("api/v1/refresh-token") {
+    post("v1/refresh-token") {
         val request = call.receiveNullable<RefreshTokenRequest>() ?: run {
             call.respond(HttpStatusCode.BadRequest, Constants.ERROR.BAD_REQUEST)
             return@post
@@ -123,7 +123,7 @@ fun Route.userRoute(authRepository: AuthRepository, userRepository: UserReposito
         }
     }
 
-    post("api/v1/logout") {
+    post("v1/logout") {
         val request = call.receiveNullable<LogoutRequest>() ?: run {
             call.respond(HttpStatusCode.BadRequest, Constants.ERROR.BAD_REQUEST)
             return@post
@@ -147,7 +147,7 @@ fun Route.userRoute(authRepository: AuthRepository, userRepository: UserReposito
     }
 
     authenticate("jwt") {
-        get("api/v1/get-user-info") {
+        get("v1/get-user-info") {
             val user = call.principal<UserModel>() ?: run {
                 call.respond(HttpStatusCode.Unauthorized, Constants.ERROR.UNAUTHORIZED)
                 return@get
@@ -155,7 +155,7 @@ fun Route.userRoute(authRepository: AuthRepository, userRepository: UserReposito
             call.respond(HttpStatusCode.OK, UserResponse(user))
         }
 
-        post("api/v1/update-user-info") {
+        post("v1/update-user-info") {
             val user = call.principal<UserModel>() ?: run {
                 call.respond(HttpStatusCode.Unauthorized, Constants.ERROR.UNAUTHORIZED)
                 return@post
