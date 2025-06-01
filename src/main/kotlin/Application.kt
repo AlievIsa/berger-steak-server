@@ -8,6 +8,7 @@ import com.alievisa.plugins.configureSerialization
 import com.alievisa.repository.impl.AuthRepositoryImpl
 import com.alievisa.repository.impl.MenuRepositoryImpl
 import com.alievisa.repository.impl.OrderRepositoryImpl
+import com.alievisa.repository.impl.RecommendationsRepositoryImpl
 import com.alievisa.repository.impl.RestaurantRepositoryImpl
 import com.alievisa.repository.impl.UserRepositoryImpl
 import com.alievisa.service.DeviceService
@@ -34,6 +35,7 @@ fun Application.module() {
     val menuRepository = MenuRepositoryImpl()
     val restaurantRepository = RestaurantRepositoryImpl()
     val orderRepository = OrderRepositoryImpl()
+    val recommendationsRepository = RecommendationsRepositoryImpl()
 
     configureDatabase()
     configureSerialization()
@@ -45,5 +47,6 @@ fun Application.module() {
         menuRepository = menuRepository,
         restaurantRepository = restaurantRepository,
         orderRepository = orderRepository,
+        recommendationsRepository = recommendationsRepository,
     )
 }
